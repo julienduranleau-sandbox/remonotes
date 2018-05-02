@@ -1,7 +1,7 @@
 <template>
   <div id="home">
-    <listing />
-    <detail />
+    <listing :selectedNote="selectedNote" :selectProduct="selectProduct"/>
+    <detail :selectedNote="selectedNote"/>
   </div>
 </template>
 
@@ -12,12 +12,17 @@ import Detail from './Detail'
 export default {
   data () {
     return {
-
+      selectedNote: null
     }
   },
   components: {
     Listing,
     Detail
+  },
+  methods: {
+    selectProduct(note) {
+      this.selectedNote = note
+    }
   }
 }
 </script>

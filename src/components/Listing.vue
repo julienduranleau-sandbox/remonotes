@@ -4,7 +4,13 @@
       <input type="text" name="" value="" placeholder="Search...">
     </div>
     <div class="notes">
-      <div class="note" v-for="note in notes" :key="note.title" @click="selectNote(note)">
+      <div
+        class="note"
+        v-for="(note, noteIndex) in notes"
+        :key="noteIndex"
+        :class="{ selected: selectedNote && selectedNote.title === note.title }"
+        @click="selectProduct(note)"
+        >
         <p class="title">{{ note.title }}</p>
       </div>
     </div>
@@ -15,14 +21,20 @@
 import Notes from '@/services/Notes'
 
 export default {
+  props: ['selectedNote', 'selectProduct'],
+  created() {
+    this.getNotes()
+  },
   data () {
     return {
-      notes: Notes.fetch()
+      notes: []
     }
   },
   methods: {
-    selectNote(note) {
-
+    getNotes() {
+      Notes.fetch().then(notes => {
+        this.notes = notes
+      })
     }
   }
 }
@@ -34,6 +46,9 @@ export default {
 #listing {
   width: 300px;
   flex: none;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
   border-right: 2px solid $borderColor;
   height: 100%;
 }
@@ -43,6 +58,7 @@ export default {
   border-bottom: 2px solid $borderColor;
   height: 55px;
   box-sizing: border-box;
+  flex: none;
 
   input {
     background: transparent;
@@ -54,27 +70,32 @@ export default {
     outline: none;
   }
 }
-.note {
-  border-bottom: 2px solid $borderColor;
-  cursor: pointer;
+.notes {
+  flex-grow: 1;
+  overflow-y: auto;
 
-  &:hover {
-    color: $activeColor;
-  }
+  .note {
+    border-bottom: 2px solid $borderColor;
+    cursor: pointer;
 
-  &.selected {
-    color: $textColor;
-    background: $activeColor;
-    position: relative;
-    top: -2px;
-    border-bottom: 0px;
-  }
+    &:hover {
+      color: $activeColor;
+    }
 
-  .title {
-    padding-left: 30px;
-    font-size: 18px;
-    padding: 10px 0px 10px 20px;
-    margin: 0px;
+    &.selected {
+      color: $textColor;
+      background: $activeColor;
+      position: relative;
+      top: -2px;
+      border-bottom: 0px;
+    }
+
+    .title {
+      padding-left: 30px;
+      font-size: 18px;
+      padding: 10px 0px 10px 20px;
+      margin: 0px;
+    }
   }
 }
 </style>
