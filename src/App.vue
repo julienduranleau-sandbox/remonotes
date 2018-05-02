@@ -14,7 +14,8 @@ export default {
 html, body {
   margin: 0px;
 }
-#app {
+#app,
+#app textarea {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

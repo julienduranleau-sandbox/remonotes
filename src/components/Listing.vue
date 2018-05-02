@@ -1,12 +1,17 @@
 <template>
   <div id="listing">
     <div class="search">
-      <input type="text" name="" value="" placeholder="Search...">
+      <input
+        type="text"
+        name=""
+        value=""
+        placeholder="Search..."
+        @keyup="setFilter">
     </div>
     <div class="notes">
       <div
         class="note"
-        v-for="(note, noteIndex) in notes"
+        v-for="(note, noteIndex) in filteredNotes"
         :key="noteIndex"
         :class="{ selected: selectedNote && selectedNote.title === note.title }"
         @click="selectProduct(note)"
@@ -25,9 +30,17 @@ export default {
   created() {
     this.getNotes()
   },
-  data () {
+  data() {
     return {
-      notes: []
+      notes: [],
+      filter: ''
+    }
+  },
+  computed: {
+    filteredNotes: function() {
+      return this.notes.filter(note => {
+        return note.rawContent.search(new RegExp(this.filter, 'i')) > -1
+      })
     }
   },
   methods: {
@@ -35,6 +48,9 @@ export default {
       Notes.fetch().then(notes => {
         this.notes = notes
       })
+    },
+    setFilter(e) {
+      this.filter = e.target.value
     }
   }
 }

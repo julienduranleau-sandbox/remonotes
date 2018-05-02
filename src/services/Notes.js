@@ -8,7 +8,10 @@ export default class Notes {
         for (let noteJson of notesJson) {
           let title = null
           let tags = null
+          let rawContent = null
           let content = null
+
+          rawContent = noteJson.content
 
           let tagsParts = /TAGS ?= ?(.*)/.exec(noteJson.content)
           if (tagsParts.length === 2) {
@@ -24,7 +27,7 @@ export default class Notes {
 
           content = noteJson.content
 
-          let note = {title, tags, content}
+          let note = {title, tags, content, rawContent}
           noteList.push(note)
         }
 

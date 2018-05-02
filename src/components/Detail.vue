@@ -2,26 +2,75 @@
   <div id="detail">
     <div class="toolbar">
       <div class="toggle">
-        <div class="left active">Edit</div>
-        <div class="right">Preview</div>
+        <div
+          class="left"
+          :class="{ active: editMode === true}"
+          @click="setEditMode(true)">
+          Edit
+        </div>
+        <div
+          class="right"
+          :class="{ active: editMode === false}"
+          @click="setEditMode(false)">
+          Preview
+        </div>
       </div>
     </div>
     <div class="text-container" v-if="selectedNote">
-      {{ selectedNote.content }}
-    </div>
+        <div
+          class="markdown-preview"
+          v-html="convertToMarkdown(selectedNote.content)"
+          v-show="editMode === false">
+        </div>
+
+        <textarea
+          class="markdown-edit"
+          v-html="selectedNote.rawContent"
+          v-show="editMode === true">
+        </textarea>
+      </div>
   </div>
 </template>
 
 <script>
+import Showdown from 'showdown/dist/showdown'
+
 export default {
   data () {
     return {
-
+      editMode: false
     }
   },
-  props: ['selectedNote']
+  props: ['selectedNote'],
+  methods: {
+    convertToMarkdown(text) {
+      let converter = new Showdown.Converter()
+      let html = converter.makeHtml(text)
+      return html
+    },
+    setEditMode(v) {
+      this.editMode = v
+    }
+  }
 }
 </script>
+
+<style lang="scss">
+/*
+ * Modify dynamic html renderer content in an unscoped style
+ */
+
+@import '@/assets/scss/globals.scss';
+
+.markdown-preview {
+  a {
+    color: $activeColor;;
+  }
+  code, pre {
+    white-space: normal;
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/globals.scss';
@@ -73,12 +122,34 @@ export default {
 }
 
 .text-container {
-  padding: 60px;
   flex-grow: 1;
-  overflow-y: auto;
+  position: relative;
 
-  a {
-    color: $activeColor;
+  .markdown-preview {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 60px;
+    word-wrap: break-word;
+  }
+
+  textarea.markdown-edit {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    resize: none;
+    background: transparent;
+    border: none;
+    padding: 60px;
+    color: $textColor;
+    font-size: 14px;
   }
 }
 
