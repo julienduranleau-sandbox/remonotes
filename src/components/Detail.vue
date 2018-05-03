@@ -19,13 +19,13 @@
     <div class="text-container" v-if="selectedNote">
         <div
           class="markdown-preview"
-          v-html="convertToMarkdown(selectedNote.content)"
+          v-html="filterMetas(convertToMarkdown(selectedNote.content))"
           v-show="editMode === false">
         </div>
 
         <textarea
           class="markdown-edit"
-          v-html="selectedNote.rawContent"
+          v-html="selectedNote.content"
           v-show="editMode === true">
         </textarea>
       </div>
@@ -34,6 +34,7 @@
 
 <script>
 import Showdown from 'showdown/dist/showdown'
+import Notes from '@/services/Notes'
 
 export default {
   data () {
@@ -47,6 +48,9 @@ export default {
       let converter = new Showdown.Converter()
       let html = converter.makeHtml(text)
       return html
+    },
+    filterMetas(content) {
+      return Notes.filterMetasFromContent(content)
     },
     setEditMode(v) {
       this.editMode = v

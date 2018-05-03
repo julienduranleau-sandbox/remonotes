@@ -39,7 +39,7 @@ export default {
   computed: {
     filteredNotes: function() {
       return this.notes.filter(note => {
-        return note.rawContent.search(new RegExp(this.filter, 'i')) > -1
+        return note.content.search(new RegExp(this.filter, 'i')) > -1
       })
     }
   },

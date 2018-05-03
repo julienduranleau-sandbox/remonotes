@@ -8,32 +8,33 @@ export default class Notes {
         for (let noteJson of notesJson) {
           let title = null
           let tags = null
-          let rawContent = null
           let content = null
-
-          rawContent = noteJson.content
 
           let tagsParts = /TAGS ?= ?(.*)/.exec(noteJson.content)
           if (tagsParts.length === 2) {
             tags = tagsParts[1].split(',')
-            noteJson.content = noteJson.content.replace(/TAGS ?= ?(.*)\n/, ' ')
           }
 
           let titleParts = /TITLE ?= ?(.*)/.exec(noteJson.content)
           if (titleParts.length === 2) {
             title = titleParts[1]
-            noteJson.content = noteJson.content.replace(/TITLE ?= ?(.*)\n/, ' ')
           }
 
           content = noteJson.content
 
-          let note = {title, tags, content, rawContent}
+          let note = {title, tags, content}
           noteList.push(note)
         }
 
         resolve(noteList)
       })
     })
+  }
+
+  static filterMetasFromContent(content) {
+    content = content.replace(/TAGS ?= ?(.*)\n/, '')
+    content = content.replace(/TITLE ?= ?(.*)\n/, '')
+    return content
   }
 
 }
